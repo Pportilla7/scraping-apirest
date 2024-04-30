@@ -77,6 +77,7 @@ function leerDatos() {
   try {
     const data = fs.readFileSync('noticias.json', 'utf-8');
     noticias = JSON.parse(data);
+    return noticias;
   } catch (error) {
     console.error('Error al leer el archivo noticias.json:', error.message);
   }
