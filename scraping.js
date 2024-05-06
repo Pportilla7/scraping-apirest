@@ -12,13 +12,14 @@ async function getNews(){
         const articles=[];
         $('article').each((i, el)=>{
             let newArticle={
+                id:i,
                 img:$('img', el).attr('src'),
                 titulo:$('a', el).attr('href'),
                 parrafo:$('p', el).text()
             }   
             articles.push(newArticle);
         })
-        console.log(articles)
+        //console.log(articles)
         return articles;
     }
     catch (error) {

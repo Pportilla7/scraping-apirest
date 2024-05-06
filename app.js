@@ -24,7 +24,7 @@ app.get('/scraping', async (req, res)=>{
 
 app.get('/getNotices', (req, res)=>{
     const noticias=procesarDatos.leerDatos();
-    console.log(noticias)
+    //console.log(noticias)
     let htmlResponse = '<h1>Noticias</h1>';
 
     noticias.forEach((noticia) => {
@@ -40,20 +40,52 @@ app.get('/getNotices', (req, res)=>{
     res.send(htmlResponse);
 })
 
-app.post('/postNotice', (req, res)=>{
-    const newNotice={
-        img: req.body.img,
-        titulo: req.body.titulo,
-        parrafo: req.body.parrafo
-    };
-    console.log(req.body.img);
-    let noticias=[];
-    noticias=procesarDatos.leerDatos();
-    //console.log(noticias);
-    noticias.push(newNotice);
+app.put('/putNotice/:id', (req, res)=>{
+  const id=req.params.id;
+  let noticias = procesarDatos.leerDatos() || [];
+  if(noticias.length===0){
+    res.send('No hay noticias que buscar');
+  }else{
+    noticias.forEach((noticia)=>{
+      if(id==noticia.id){
+
+        noticia.img= req.body.img;
+        noticia.titulo= req.body.titulo;
+        noticia.parrafo= req.body.parrafo;
+        console.log(noticia);
+      }
+    })
     procesarDatos.guardarDatos(noticias);
-    //console.log(noticias);
-    res.send('Noticia guardada con exito');
+    res.send('Información actualizada correctamente')
+  }
+})
+
+app.post('/postNotice', (req, res)=>{
+  let noticias = procesarDatos.leerDatos() || [];
+  const newNotice={
+      id:noticias.length,
+      img: req.body.img,
+      titulo: req.body.titulo,
+      parrafo: req.body.parrafo
+  };
+  
+  noticias.push(newNotice);
+  procesarDatos.guardarDatos(noticias);
+
+  res.send('Noticia guardada con exito');
+})
+
+app.delete('/deleteNotices', (req,res)=>{
+  let noticias=[];
+  noticias=procesarDatos.leerDatos();
+  if(noticias.length!=0){
+    noticias='';
+    procesarDatos.guardarDatos(noticias);
+    res.send('Noticias eliminadas correctamente');
+  }
+  else{
+    res.send('No hay noticias para eliminar')
+  }
 })
 
 app.listen(3000, ()=>{
